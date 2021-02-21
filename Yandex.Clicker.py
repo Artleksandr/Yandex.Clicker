@@ -27,11 +27,11 @@ def main():
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Кликер говна')
 
-    all_sprites = pygame.sprite.Group()
+    e = pygame.sprite.Group()
     bg = pygame.sprite.Group()
 
-    enemy = pygame.sprite.Sprite(all_sprites)
-    enemy.image = load_image("creature.png")
+    enemy = pygame.sprite.Sprite(e)
+    enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
     enemy.rect = enemy.image.get_rect()
     background = pygame.sprite.Sprite(bg)
     background.image = load_image("padick.png")
@@ -50,7 +50,8 @@ def main():
                     enemy.rect.collidepoint(pygame.mouse.get_pos()):
                 enemy.rect.topleft = random.randint(0, size[0] - 82), random.randint(0, size[1] - 100)
                 balance += 1
-        all_sprites.draw(screen)
+                enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
+        e.draw(screen)
         pygame.display.flip()
 
     pygame.quit()
