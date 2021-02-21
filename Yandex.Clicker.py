@@ -22,31 +22,34 @@ def load_image(name, ck=None):
 
 
 def main():
-    size = 400, 300
+    balance = 0
+    size = 800, 500
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Кликер говна')
 
     all_sprites = pygame.sprite.Group()
+    bg = pygame.sprite.Group()
 
     enemy = pygame.sprite.Sprite(all_sprites)
     enemy.image = load_image("creature.png")
     enemy.rect = enemy.image.get_rect()
+    background = pygame.sprite.Sprite(bg)
+    background.image = load_image("padick.png")
+    background.rect = background.image.get_rect()
 
     running = True
     while running:
+        bg.draw(screen)
+        font = pygame.font.SysFont('Helvetica', 48)
+        text_surface = font.render(str(balance), False, (0, 0, 0))
+        screen.blit(text_surface, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and\
                     enemy.rect.collidepoint(pygame.mouse.get_pos()):
-                print(screen.get_at((0, 0)))
-                pygame.draw.rect(screen, 'black', (enemy.rect[0], enemy.rect[1], enemy.rect[0] + enemy.rect[2],
-                                                   enemy.rect[1] + enemy.rect[3]))
                 enemy.rect.topleft = random.randint(0, size[0] - 82), random.randint(0, size[1] - 100)
-                print('Убил')
-                font = pygame.font.SysFont('Helvetica', 28)
-                text_surface = font.render('Some Text', False, (255, 255, 255))
-                screen.blit(text_surface, (0, 0))
+                balance += 1
         all_sprites.draw(screen)
         pygame.display.flip()
 
