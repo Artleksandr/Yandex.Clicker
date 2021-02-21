@@ -36,6 +36,7 @@ def main():
     background = pygame.sprite.Sprite(bg)
     background.image = load_image("padick.png")
     background.rect = background.image.get_rect()
+    enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
 
     running = True
     while running:
@@ -48,7 +49,7 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and\
                     enemy.rect.collidepoint(pygame.mouse.get_pos()):
-                enemy.rect.topleft = random.randint(0, size[0] - 82), random.randint(0, size[1] - 100)
+                enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
                 balance += 1
                 enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
         e.draw(screen)
