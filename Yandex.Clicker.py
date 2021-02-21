@@ -4,7 +4,7 @@ import random
 
 
 def load_image(name, ck=None):
-    a = os.path.join('../data', name)
+    a = os.path.join('data', name)
     try:
         image = pygame.image.load(a).convert_alpha()
     except pygame.error as message:
