@@ -1,6 +1,7 @@
 import os
 import pygame
 import random
+pygame.font.init()
 
 
 def load_image(name, ck=None):
@@ -43,6 +44,9 @@ def main():
                                                    enemy.rect[1] + enemy.rect[3]))
                 enemy.rect.topleft = random.randint(0, size[0] - 82), random.randint(0, size[1] - 100)
                 print('Убил')
+                font = pygame.font.SysFont('Helvetica', 28)
+                text_surface = font.render('Some Text', False, (255, 255, 255))
+                screen.blit(text_surface, (0, 0))
         all_sprites.draw(screen)
         pygame.display.flip()
 
