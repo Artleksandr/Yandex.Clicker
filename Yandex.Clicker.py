@@ -1,7 +1,6 @@
 import os
 import pygame
 import random
-
 pygame.font.init()
 
 
@@ -53,6 +52,10 @@ def main():
     dmgup.rect = dmgup.image.get_rect()
     dmgup.rect.topleft = 0, 60
 
+    def summon():
+        enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
+        enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
+        return location * 10 + kills // 10
     running = True
     while running:
         bg.draw(screen)
@@ -84,12 +87,11 @@ def main():
                     if health == 0:
                         kills += 1
                         balance += random.randint((location - 1) * 10 + 5, location * 15)
-                        enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
-                        enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
-                        health = location * 10 + kills // 10
+                        health = summon()
                 elif nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
                     location += 1
                     kills = 0
+                    health = summon()
                     if location == 5:
                         bg.remove(nextlevel)
                         bg.remove(lock)
