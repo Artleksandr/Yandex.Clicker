@@ -38,7 +38,7 @@ def main():
     enemy.image = load_image(random.choice(('gopnick1.png', 'gopnick2.png')))
     enemy.rect = enemy.image.get_rect()
     background = pygame.sprite.Sprite(bg)
-    background.image = load_image('location{}.png'.format(location))
+    background.image = load_image('location1.png'.format(location))
     background.rect = background.image.get_rect()
     enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
     nextlevel = pygame.sprite.Sprite(bg)
@@ -63,10 +63,10 @@ def main():
         balance_surface = font_kills.render('Баланс: ' + str(balance), False, (0, 159, 0))
         kills_surface = font_kills.render('Убийств: ' + str(kills), False, (191, 0, 0))
         health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
-        if balance < 250 * 2 ** damage:
-            dmgup_surface = font_health.render(str(250 * 2 ** damage), False, (191, 0, 0))
+        if balance < 250 * 2 ** (damage - 1):
+            dmgup_surface = font_health.render(str(250 * 2 ** (damage - 1)), False, (191, 0, 0))
         else:
-            dmgup_surface = font_health.render(str(250 * 2 ** damage), False, (0, 159, 0))
+            dmgup_surface = font_health.render(str(250 * 2 ** (damage - 1)), False, (0, 159, 0))
         screen.blit(dmgup_surface, (dmgup.rect.topleft[0] + (dmgup.rect.width - dmgup_surface.get_rect()[2]) // 2, 96))
         screen.blit(kills_surface, (background.rect.topright[0] - 175 - len(str(kills)) * 22, 0))
         screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
@@ -83,15 +83,18 @@ def main():
                         health -= damage
                     if health == 0:
                         kills += 1
-                        balance += random.randint((location - 1) * 10 + 5, 10)
+                        balance += random.randint((location - 1) * 10 + 5, location * 15)
                         enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
                         enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
                         health = location * 10 + kills // 10
                 elif nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
                     location += 1
                     kills = 0
-                elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** damage:
-                    balance -= 250 * 2 ** damage
+                    if location == 5:
+                        bg.remove(nextlevel)
+                        bg.remove(lock)
+                elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (damage - 1):
+                    balance -= 250 * 2 ** (damage - 1)
                     damage += 1
         e.draw(screen)
         pygame.display.flip()
