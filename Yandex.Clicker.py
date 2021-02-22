@@ -72,11 +72,11 @@ def main():
                 else:
                     health -= damage
                 if health == 0:
+                    kills += 1
                     balance += random.randint((location - 1) * 10 + 5, 10)
                     enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
                     enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
                     health = location * 10 + kills // 10
-                    kills += 1
         e.draw(screen)
         pygame.display.flip()
 
