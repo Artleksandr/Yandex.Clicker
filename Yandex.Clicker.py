@@ -22,29 +22,44 @@ def load_image(name, ck=None):
     return image
 
 
-def summon(enemy, location, kills):
-    if location == 1:
-        enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
-        enemy.rect = enemy.image.get_rect()
-        enemy.rect.topleft = random.choice(((300, 230), (300, 225)))
-    elif location == 2:
-        enemy.image = load_image("po.png")
-        enemy.rect = enemy.image.get_rect()
-        enemy.rect.topleft = 465, 278
-    elif location == 3:
-        enemy.image = load_image(random.choice(("pendos1.png", "pendos2.png")))
-        enemy.rect = enemy.image.get_rect()
-        enemy.rect.topleft = random.choice(((535, 230), (300, 225)))
-    #elif location == 4:
+enemytype = 0
 
-    return location * 10 + kills // 10
+
+def summon(enemy, location, kills, midbottom):
+    if kills > 68 and kills % 69 == 0:
+        global enemytype
+        enemy.image = load_image('creature.png')
+        enemy.rect = enemy.image.get_rect()
+        enemy.rect.midbottom = midbottom
+        enemytype = 69
+        return 69
+    else:
+        enemytype = 0
+        if location == 1:
+            enemy.image = load_image(random.choice(('gopnick1.png', 'gopnick2.png')))
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
+        elif location == 2:
+            enemy.image = load_image('po.png')
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.topleft = 465, 278
+        elif location == 3:
+            enemy.image = load_image(random.choice(('pendos1.png', 'pendos2.png')))
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.topleft = random.choice(((535, 230), (300, 225)))
+        elif location == 4:
+            enemy.image = load_image('snowman.png')
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.topleft = random.choice(((650, 200), (300, 200)))
+        #elif location == 5
+        return location * 10 + kills // 10
 
 
 def main():
-    location = 3
-    kills = 100
+    location = 4
+    kills = 0
     crit = 5
-    balance = 1000000
+    balance = 0
     damage = 1
 
     size = 800, 500
@@ -58,7 +73,7 @@ def main():
     background.image = load_image('location{}.png'.format(location))
     background.rect = background.image.get_rect()
 
-    health = summon(enemy, location, kills)
+    health = summon(enemy, location, kills, None)
 
     nextlevel = pygame.sprite.Sprite(bg)
     nextlevel.image = load_image('next.png')
@@ -85,7 +100,10 @@ def main():
         font_kills = pygame.font.SysFont('Helvetica', 48)
         balance_surface = font_kills.render('Баланс: ' + str(balance), False, (0, 159, 0))
         kills_surface = font_kills.render('Убийств: ' + str(kills), False, (191, 0, 0))
-        health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
+        if location != 4:
+            health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
+        else:
+            health_surface = font_health.render('Здоровье: ' + str(health), False, (0, 0, 0))
         if balance < 250 * 2 ** (damage - 1):
             dmgup_surface = font_health.render(str(250 * 2 ** (damage - 1)), False, (191, 0, 0))
         else:
@@ -116,12 +134,16 @@ def main():
                         health -= damage
                     if health <= 0:
                         kills += 1
-                        balance += random.randint((location - 1) * 10 + 5, location * 15)
-                        health = summon(enemy, location, kills)
+                        print(enemytype)
+                        if enemytype == 0:
+                            balance += random.randint((location - 1) * 10 + 5, location * 15)
+                        else:
+                            balance += 690
+                        health = summon(enemy, location, kills, enemy.rect.midbottom)
                 elif nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
                     location += 1
                     kills = 0
-                    health = summon(enemy, location, kills)
+                    health = summon(enemy, location, kills, enemy.rect.midbottom)
                     background.image = load_image('location{}.png'.format(location))
                     if location == 6:
                         bg.remove(nextlevel)
