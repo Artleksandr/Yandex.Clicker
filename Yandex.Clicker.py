@@ -1,6 +1,7 @@
 import os
 import pygame
 import random
+
 pygame.font.init()
 
 
@@ -21,13 +22,31 @@ def load_image(name, ck=None):
     return image
 
 
+def summon(enemy, location, kills):
+    if location == 1:
+        enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
+        enemy.rect = enemy.image.get_rect()
+        enemy.rect.topleft = random.choice(((300, 230), (300, 225)))
+    elif location == 2:
+        enemy.image = load_image("po.png")
+        enemy.rect = enemy.image.get_rect()
+        enemy.rect.topleft = 465, 278
+    elif location == 3:
+        enemy.image = load_image(random.choice(("pendos1.png", "pendos2.png")))
+        enemy.rect = enemy.image.get_rect()
+        enemy.rect.topleft = random.choice(((535, 230), (300, 225)))
+    #elif location == 4:
+
+    return location * 10 + kills // 10
+
+
 def main():
-    location = 1
+    location = 3
     kills = 100
     crit = 5
     balance = 1000000
     damage = 1
-    health = location * 10 + kills // 10
+
     size = 800, 500
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Кликер говна')
@@ -38,14 +57,9 @@ def main():
     background = pygame.sprite.Sprite(bg)
     background.image = load_image('location{}.png'.format(location))
     background.rect = background.image.get_rect()
-    if location == 1:
-        enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
-        enemy.rect = enemy.image.get_rect()
-        enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
-    else:
-        enemy.image = load_image("po.png")
-        enemy.rect = enemy.image.get_rect()
-        enemy.rect.topleft = 465, 278
+
+    health = summon(enemy, location, kills)
+
     nextlevel = pygame.sprite.Sprite(bg)
     nextlevel.image = load_image('next.png')
     nextlevel.rect = nextlevel.image.get_rect()
@@ -62,16 +76,6 @@ def main():
     critup.rect = critup.image.get_rect()
     critup.rect.topleft = 0, 400
 
-    def summon():
-        if location == 1:
-            enemy.image = load_image(random.choice(("gopnick1.png", "gopnick2.png")))
-            enemy.rect = enemy.image.get_rect()
-            enemy.rect.topleft = random.choice(((150, 230), (300, 225)))
-        else:
-            enemy.image = load_image("po.png")
-            enemy.rect = enemy.image.get_rect()
-            enemy.rect.topleft = 465, 278
-        return location * 10 + kills // 10
     running = True
     while running:
         bg.draw(screen)
@@ -113,11 +117,11 @@ def main():
                     if health <= 0:
                         kills += 1
                         balance += random.randint((location - 1) * 10 + 5, location * 15)
-                        health = summon()
+                        health = summon(enemy, location, kills)
                 elif nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
                     location += 1
                     kills = 0
-                    health = summon()
+                    health = summon(enemy, location, kills)
                     background.image = load_image('location{}.png'.format(location))
                     if location == 6:
                         bg.remove(nextlevel)
