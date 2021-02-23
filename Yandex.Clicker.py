@@ -55,6 +55,12 @@ def summon(enemy, location, kills, midbottom):
         return location * 10 + kills // 10
 
 
+def save_game(location, kills, crit, balance, damage):
+    save = open('data/save_{}'.format(location - 1), 'w', encoding='utf8')
+    save.write(location, kills, crit, balance, damage, sep='\n', end='')
+    save.close()
+
+
 def main():
     location = 4
     kills = 0
@@ -148,6 +154,7 @@ def main():
                     if location == 6:
                         bg.remove(nextlevel)
                         bg.remove(lock)
+                    save_game(location, kills, crit, balance, damage)
                 elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (damage - 1):
                     balance -= 250 * 2 ** (damage - 1)
                     damage += 1
