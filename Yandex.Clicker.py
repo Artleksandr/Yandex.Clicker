@@ -51,19 +51,19 @@ def summon(enemy, location, kills, midbottom):
             enemy.image = load_image('snowman.png')
             enemy.rect = enemy.image.get_rect()
             enemy.rect.topleft = random.choice(((650, 200), (300, 200)))
-        #elif location == 5
+        # elif location == 5
         return location * 10 + kills // 10
 
 
 def save_game(location, kills, crit, balance, damage):
     save = open('data/save_{}'.format(location - 1), 'w', encoding='utf8')
-    save.write(location, kills, crit, balance, damage, sep='\n', end='')
+    save.write(str(location) + '\n' + str(kills) + '\n' + str(crit) + '\n' + str(balance) + '\n' + str(damage))
     save.close()
 
 
 def main():
     location = 4
-    kills = 0
+    kills = 100
     crit = 5
     balance = 0
     damage = 1
