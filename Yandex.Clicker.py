@@ -119,7 +119,7 @@ def main():
                     kills = 0
                     health = summon()
                     background.image = load_image('location{}.png'.format(location))
-                    if location == 5:
+                    if location == 6:
                         bg.remove(nextlevel)
                         bg.remove(lock)
                 elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (damage - 1):
