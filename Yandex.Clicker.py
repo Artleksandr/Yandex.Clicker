@@ -77,8 +77,8 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 1
-    kills = 0
+    location = 5
+    kills = 100
     crit = 5
     balance = 0
     damage = 1
@@ -251,17 +251,16 @@ def main():
                     else:
                         health -= damage
                 if location < 6 and nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
-                    if location == 5:
-                        save_game(location, kills, crit, balance, damage)
                     location += 1
-                    kills = 0
-                    health = summon(enemy, location, kills, enemy.rect.midbottom)
-                    background.image = load_image('location{}.png'.format(location))
                     if location == 6:
+                        save_game(location, kills, crit, balance, damage)
                         bg.remove(nextlevel)
                         bg.remove(lock)
                     else:
-                        save_game(location, kills, crit, balance, damage)
+                        save_game(location, 0, crit, balance, damage)
+                    kills = 0
+                    health = summon(enemy, location, kills, enemy.rect.midbottom)
+                    background.image = load_image('location{}.png'.format(location))
                 elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (damage - 1):
                     balance -= 250 * 2 ** (damage - 1)
                     damage += 1
