@@ -2,6 +2,8 @@ import os
 import pygame
 import random
 
+global vex1, vex2, hp1, hp2
+
 pygame.font.init()
 
 
@@ -27,7 +29,7 @@ enemytype = 0
 
 def summon(enemy, location, kills, midbottom):
     if kills > 68 and kills % 69 == 0:
-        global enemytype
+        global enemytype, hp1, hp2
         enemy.image = load_image('creature.png')
         enemy.rect = enemy.image.get_rect()
         enemy.rect.midbottom = midbottom
@@ -51,7 +53,18 @@ def summon(enemy, location, kills, midbottom):
             enemy.image = load_image('snowman.png')
             enemy.rect = enemy.image.get_rect()
             enemy.rect.topleft = random.choice(((650, 200), (300, 200)))
-        # elif location == 5
+        elif location == 5:
+            evoker = random.choice([True, False, False, False])
+            if evoker:
+                enemy.image = load_image('evoker.png')
+                enemy.rect = enemy.image.get_rect()
+                enemy.rect.topleft = 325, 150
+                hp1 = hp2 = (location * 10 + kills // 10) // 2
+
+            else:
+                enemy.image = load_image('vindicator.png')
+                enemy.rect = enemy.image.get_rect()
+                enemy.rect.topleft = 400, 200
         return location * 10 + kills // 10
 
 
@@ -62,11 +75,14 @@ def save_game(location, kills, crit, balance, damage):
 
 
 def main():
-    location = 4
+    global hp1, hp2, vex1, vex2
+    hp1 = hp2 = 0
+    location = 5
     kills = 100
     crit = 5
     balance = 0
     damage = 1
+    check = 0
 
     size = 800, 500
     screen = pygame.display.set_mode(size)
@@ -74,6 +90,10 @@ def main():
     e = pygame.sprite.Group()
     bg = pygame.sprite.Group()
     locker = pygame.sprite.Group()
+    vexes = pygame.sprite.Group()
+    vex = pygame.sprite.Sprite(vexes)
+    vex.image = load_image('vex.png')
+    vex.rect = vex.image.get_rect()
     enemy = pygame.sprite.Sprite(e)
     background = pygame.sprite.Sprite(bg)
     background.image = load_image('location{}.png'.format(location))
@@ -103,9 +123,12 @@ def main():
         if kills < 100:
             locker.draw(screen)
         font_health = pygame.font.SysFont('Helvetica', 24)
+        font_vexhp = pygame.font.SysFont('Helvetica', 18)
         font_kills = pygame.font.SysFont('Helvetica', 48)
         balance_surface = font_kills.render('Баланс: ' + str(balance), False, (0, 159, 0))
         kills_surface = font_kills.render('Убийств: ' + str(kills), False, (191, 0, 0))
+        hp1_surface = font_vexhp.render('Здоровье: ' + str(hp1), False, (255, 255, 255))
+        hp2_surface = font_vexhp.render('Здоровье: ' + str(hp2), False, (255, 255, 255))
         if location != 4:
             health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
         else:
@@ -120,33 +143,65 @@ def main():
             critup_surface = font_health.render(str(250 * 2 ** (crit - 5)), False, (0, 159, 0))
         dmg_surface = font_health.render(str(damage), False, (0, 0, 191))
         crit_surface = font_health.render(str(crit) + '%', False, (0, 0, 191))
+        if hp1 > 0:
+            vex1 = (275, 150, 59, 80)
+            vex.rect.topleft = vex1[0], vex1[1]
+            vexes.draw(screen)
+            screen.blit(hp1_surface, (vex1[0] + (vex.rect.width - hp1_surface.get_rect()[2]) // 2,
+                                      vex1[1] - 50))
+        if hp2 > 0:
+            vex2 = (400, 150, 59, 80)
+            vex.rect.topleft = vex2[0], vex2[1]
+            vexes.draw(screen)
+            screen.blit(hp2_surface, (vex2[0] + (vex.rect.width - hp2_surface.get_rect()[2]) // 2,
+                                      vex2[1] - 50))
         screen.blit(dmg_surface, (dmgup.rect.topleft[0] + 6, dmgup.rect.topleft[1]))
         screen.blit(crit_surface, (critup.rect.topleft[0] + 6, critup.rect.topleft[1]))
         screen.blit(critup_surface, (critup.rect.topleft[0] + (critup.rect.width - critup_surface.get_rect()[2]) // 2,
                                      436))
         screen.blit(dmgup_surface, (dmgup.rect.topleft[0] + (dmgup.rect.width - dmgup_surface.get_rect()[2]) // 2, 96))
         screen.blit(kills_surface, (background.rect.topright[0] - 175 - len(str(kills)) * 22, 0))
-        screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
-                                     enemy.rect.topleft[1] - 35))
+        if health > 0:
+            screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
+                                         enemy.rect.topleft[1] - 35))
         screen.blit(balance_surface, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if hp1 > 0:
+                    if (pygame.mouse.get_pos()[0] in range(vex1[0], vex1[0] + vex1[2])) \
+                            and (pygame.mouse.get_pos()[1] in range(vex1[1], vex1[1] + vex1[3])):
+                        if crit >= random.randint(1, 100):
+                            hp1 -= damage * 2
+                        else:
+                            hp1 -= damage
+                if hp2 > 0:
+                    if (pygame.mouse.get_pos()[0] in range(vex2[0], vex2[0] + vex2[2])) \
+                            and (pygame.mouse.get_pos()[1] in range(vex2[1], vex2[1] + vex2[3])):
+                        if crit >= random.randint(1, 100):
+                            hp2 -= damage * 2
+                        else:
+                            hp2 -= damage
                 if enemy.rect.collidepoint(pygame.mouse.get_pos()):
                     if crit >= random.randint(1, 100):
                         health -= damage * 2
                     else:
                         health -= damage
-                    if health <= 0:
+                if health <= 0:
+                    if check == 0:
+                        check = 1
                         kills += 1
-                        print(enemytype)
                         if enemytype == 0:
                             balance += random.randint((location - 1) * 10 + 5, location * 15)
                         else:
                             balance += 690
+                    if hp1 <= 0 and hp2 <= 0:
+                        check = 0
                         health = summon(enemy, location, kills, enemy.rect.midbottom)
-                elif nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
+                elif location < 6 and nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
+                    if location == 5:
+                        save_game(location, kills, crit, balance, damage)
                     location += 1
                     kills = 0
                     health = summon(enemy, location, kills, enemy.rect.midbottom)
@@ -154,14 +209,16 @@ def main():
                     if location == 6:
                         bg.remove(nextlevel)
                         bg.remove(lock)
-                    save_game(location, kills, crit, balance, damage)
+                    else:
+                        save_game(location, kills, crit, balance, damage)
                 elif dmgup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (damage - 1):
                     balance -= 250 * 2 ** (damage - 1)
                     damage += 1
                 elif critup.rect.collidepoint(pygame.mouse.get_pos()) and balance >= 250 * 2 ** (crit - 5):
                     balance -= 250 * 2 ** (crit - 5)
                     crit += 1
-        e.draw(screen)
+        if health > 0:
+            e.draw(screen)
         pygame.display.flip()
 
     pygame.quit()
