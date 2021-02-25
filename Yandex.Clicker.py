@@ -60,7 +60,6 @@ def summon(enemy, location, kills, midbottom):
                 enemy.rect = enemy.image.get_rect()
                 enemy.rect.topleft = 325, 150
                 hp1 = hp2 = (location * 10 + kills // 10) // 2
-
             else:
                 enemy.image = load_image('vindicator.png')
                 enemy.rect = enemy.image.get_rect()
@@ -77,12 +76,14 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 5
+    location = 4
     kills = 100
     crit = 5
     balance = 0
     damage = 1
     check = 0
+    vex1red = 0
+    vex2red = 0
 
     size = 800, 500
     screen = pygame.display.set_mode(size)
@@ -91,9 +92,14 @@ def main():
     bg = pygame.sprite.Group()
     locker = pygame.sprite.Group()
     vexes = pygame.sprite.Group()
-    vex = pygame.sprite.Sprite(vexes)
-    vex.image = load_image('vex.png')
-    vex.rect = vex.image.get_rect()
+    vex1 = pygame.sprite.Sprite(vexes)
+    vex1.image = load_image('vex1.png')
+    vex1.rect = vex1.image.get_rect()
+    vex1.rect.topleft = 275, 150
+    vex2 = pygame.sprite.Sprite(vexes)
+    vex2.image = load_image('vex2.png')
+    vex2.rect = vex2.image.get_rect()
+    vex2.rect.topleft = 400, 150
     enemy = pygame.sprite.Sprite(e)
     background = pygame.sprite.Sprite(bg)
     background.image = load_image('location{}.png'.format(location))
@@ -144,17 +150,41 @@ def main():
         dmg_surface = font_health.render(str(damage), False, (0, 0, 191))
         crit_surface = font_health.render(str(crit) + '%', False, (0, 0, 191))
         if hp1 > 0:
-            vex1 = (275, 150, 59, 80)
-            vex.rect.topleft = vex1[0], vex1[1]
+            vex1 = pygame.sprite.Sprite(vexes)
+            vex1.image = load_image('vex1.png')
+            vex1.rect = vex1.image.get_rect()
+            vex1.rect.topleft = 275, 150
             vexes.draw(screen)
-            screen.blit(hp1_surface, (vex1[0] + (vex.rect.width - hp1_surface.get_rect()[2]) // 2,
-                                      vex1[1] - 50))
+            screen.blit(hp1_surface, (vex1.rect[0] + (vex1.rect.width - hp1_surface.get_rect()[2]) // 2,
+                                      vex1.rect[1] - 50))
+            if vex1red > 0:
+                vex1red -= 1
+                vexes.draw(screen)
+            else:
+                vex1.image = load_image('vex1.png')
+        elif vex1red > 0:
+            vex1red -= 1
+            vexes.draw(screen)
+        else:
+            vexes.remove(vex1)
         if hp2 > 0:
-            vex2 = (400, 150, 59, 80)
-            vex.rect.topleft = vex2[0], vex2[1]
+            vex2 = pygame.sprite.Sprite(vexes)
+            vex2.image = load_image('vex2.png')
+            vex2.rect = vex2.image.get_rect()
+            vex2.rect.topleft = 400, 150
             vexes.draw(screen)
-            screen.blit(hp2_surface, (vex2[0] + (vex.rect.width - hp2_surface.get_rect()[2]) // 2,
-                                      vex2[1] - 50))
+            screen.blit(hp2_surface, (vex2.rect[0] + (vex2.rect.width - hp2_surface.get_rect()[2]) // 2,
+                                      vex2.rect[1] - 50))
+            if vex2red > 0:
+                vex2red -= 1
+                vexes.draw(screen)
+            else:
+                vex2.image = load_image('vex2.png')
+        elif vex2red > 0:
+            vex2red -= 1
+            vexes.draw(screen)
+        else:
+            vexes.remove(vex2)
         screen.blit(dmg_surface, (dmgup.rect.topleft[0] + 6, dmgup.rect.topleft[1]))
         screen.blit(crit_surface, (critup.rect.topleft[0] + 6, critup.rect.topleft[1]))
         screen.blit(critup_surface, (critup.rect.topleft[0] + (critup.rect.width - critup_surface.get_rect()[2]) // 2,
@@ -169,20 +199,24 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if hp1 > 0:
-                    if (pygame.mouse.get_pos()[0] in range(vex1[0], vex1[0] + vex1[2])) \
-                            and (pygame.mouse.get_pos()[1] in range(vex1[1], vex1[1] + vex1[3])):
-                        if crit >= random.randint(1, 100):
-                            hp1 -= damage * 2
-                        else:
-                            hp1 -= damage
-                if hp2 > 0:
-                    if (pygame.mouse.get_pos()[0] in range(vex2[0], vex2[0] + vex2[2])) \
-                            and (pygame.mouse.get_pos()[1] in range(vex2[1], vex2[1] + vex2[3])):
-                        if crit >= random.randint(1, 100):
-                            hp2 -= damage * 2
-                        else:
-                            hp2 -= damage
+                if hp1 > 0 and (pygame.mouse.get_pos()[0] in range(vex1.rect[0], vex1.rect[0] + vex1.rect[2])) \
+                        and (pygame.mouse.get_pos()[1] in range(vex1.rect[1], vex1.rect[1] + vex1.rect[3])):
+                    if crit >= random.randint(1, 100):
+                        hp1 -= damage * 2
+                    else:
+                        hp1 -= damage
+                    vex1.image = load_image('vex_red1.png')
+                    vex1red = 20
+                    vexes.draw(screen)
+                if hp2 > 0 and (pygame.mouse.get_pos()[0] in range(vex2.rect[0], vex2.rect[0] + vex2.rect[2])) \
+                        and (pygame.mouse.get_pos()[1] in range(vex2.rect[1], vex2.rect[1] + vex2.rect[3])):
+                    if crit >= random.randint(1, 100):
+                        hp2 -= damage * 2
+                    else:
+                        hp2 -= damage
+                    vex2.image = load_image('vex_red2.png')
+                    vex2red = 20
+                    vexes.draw(screen)
                 if enemy.rect.collidepoint(pygame.mouse.get_pos()):
                     if crit >= random.randint(1, 100):
                         health -= damage * 2
