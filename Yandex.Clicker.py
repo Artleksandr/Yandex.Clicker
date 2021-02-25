@@ -56,6 +56,7 @@ def summon(enemy, location, kills, midbottom):
         elif location == 5:
             evoker = random.choice([True, False, False, False])
             if evoker:
+                enemytype = 1
                 enemy.image = load_image('evoker.png')
                 enemy.rect = enemy.image.get_rect()
                 enemy.rect.topleft = 325, 150
@@ -76,14 +77,13 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 4
-    kills = 100
+    location = 1
+    kills = 0
     crit = 5
     balance = 0
     damage = 1
     check = 0
-    vex1red = 0
-    vex2red = 0
+    vex1red = vex2red = poattacked = enemyred = 0
 
     size = 800, 500
     screen = pygame.display.set_mode(size)
@@ -150,41 +150,30 @@ def main():
         dmg_surface = font_health.render(str(damage), False, (0, 0, 191))
         crit_surface = font_health.render(str(crit) + '%', False, (0, 0, 191))
         if hp1 > 0:
-            vex1 = pygame.sprite.Sprite(vexes)
-            vex1.image = load_image('vex1.png')
-            vex1.rect = vex1.image.get_rect()
             vex1.rect.topleft = 275, 150
-            vexes.draw(screen)
             screen.blit(hp1_surface, (vex1.rect[0] + (vex1.rect.width - hp1_surface.get_rect()[2]) // 2,
                                       vex1.rect[1] - 50))
             if vex1red > 0:
                 vex1red -= 1
-                vexes.draw(screen)
             else:
                 vex1.image = load_image('vex1.png')
         elif vex1red > 0:
             vex1red -= 1
-            vexes.draw(screen)
         else:
-            vexes.remove(vex1)
+            vex1.rect.topleft = 801, 501
         if hp2 > 0:
-            vex2 = pygame.sprite.Sprite(vexes)
-            vex2.image = load_image('vex2.png')
-            vex2.rect = vex2.image.get_rect()
             vex2.rect.topleft = 400, 150
-            vexes.draw(screen)
             screen.blit(hp2_surface, (vex2.rect[0] + (vex2.rect.width - hp2_surface.get_rect()[2]) // 2,
                                       vex2.rect[1] - 50))
             if vex2red > 0:
                 vex2red -= 1
-                vexes.draw(screen)
             else:
                 vex2.image = load_image('vex2.png')
         elif vex2red > 0:
             vex2red -= 1
-            vexes.draw(screen)
         else:
-            vexes.remove(vex2)
+            vex2.rect.topleft = 801, 501
+        vexes.draw(screen)
         screen.blit(dmg_surface, (dmgup.rect.topleft[0] + 6, dmgup.rect.topleft[1]))
         screen.blit(crit_surface, (critup.rect.topleft[0] + 6, critup.rect.topleft[1]))
         screen.blit(critup_surface, (critup.rect.topleft[0] + (critup.rect.width - critup_surface.get_rect()[2]) // 2,
@@ -195,6 +184,33 @@ def main():
             screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
                                          enemy.rect.topleft[1] - 35))
         screen.blit(balance_surface, (0, 0))
+        if poattacked > 0 and location == 2:
+            poattacked -= 1
+            e.draw(screen)
+        elif enemyred > 0 and location == 5:
+            enemyred -= 1
+            e.draw(screen)
+        elif location == 2:
+            rectpossaved = enemy.rect.midbottom
+            enemy.image = load_image('po.png')
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.midbottom = rectpossaved
+        elif location == 5:
+            if enemytype == 0:
+                enemy.image = load_image('vindicator.png')
+            else:
+                enemy.image = load_image('evoker.png')
+        if health <= 0 and enemyred == 0:
+            if check == 0:
+                check = 1
+                kills += 1
+                if enemytype <= 1:
+                    balance += random.randint((location - 1) * 10 + 5, location * 15)
+                else:
+                    balance += 690
+            if hp1 <= 0 and hp2 <= 0:
+                check = 0
+                health = summon(enemy, location, kills, enemy.rect.midbottom)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -218,22 +234,23 @@ def main():
                     vex2red = 20
                     vexes.draw(screen)
                 if enemy.rect.collidepoint(pygame.mouse.get_pos()):
+                    if location == 2:
+                        poattacked = 50
+                        rectpossaved = enemy.rect.midbottom
+                        enemy.image = load_image('po_attacked.png')
+                        enemy.rect = enemy.image.get_rect()
+                        enemy.rect.midbottom = rectpossaved
+                    elif location == 5 and health > 0:
+                        enemyred = 20
+                        if enemytype == 0:
+                            enemy.image = load_image('vindicator_red.png')
+                        else:
+                            enemy.image = load_image('evoker_red.png')
                     if crit >= random.randint(1, 100):
                         health -= damage * 2
                     else:
                         health -= damage
-                if health <= 0:
-                    if check == 0:
-                        check = 1
-                        kills += 1
-                        if enemytype == 0:
-                            balance += random.randint((location - 1) * 10 + 5, location * 15)
-                        else:
-                            balance += 690
-                    if hp1 <= 0 and hp2 <= 0:
-                        check = 0
-                        health = summon(enemy, location, kills, enemy.rect.midbottom)
-                elif location < 6 and nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
+                if location < 6 and nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
                     if location == 5:
                         save_game(location, kills, crit, balance, damage)
                     location += 1
