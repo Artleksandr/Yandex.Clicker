@@ -77,11 +77,11 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 5
-    kills = 100
+    location = 2
+    kills = 68
     crit = 5
     balance = 0
-    damage = 1
+    damage = 10
     check = 0
     vex1red = vex2red = poattacked = enemyred = 0
 
@@ -184,18 +184,18 @@ def main():
             screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
                                          enemy.rect.topleft[1] - 35))
         screen.blit(balance_surface, (0, 0))
-        if poattacked > 0 and location == 2:
+        if poattacked > 0 and location == 2 and enemytype == 0:
             poattacked -= 1
             e.draw(screen)
-        elif enemyred > 0 and location == 5:
+        elif enemyred > 0 and location == 5 and enemytype != 69:
             enemyred -= 1
             e.draw(screen)
-        elif location == 2:
+        elif location == 2 and enemytype == 0:
             rectpossaved = enemy.rect.midbottom
             enemy.image = load_image('po.png')
             enemy.rect = enemy.image.get_rect()
             enemy.rect.midbottom = rectpossaved
-        elif location == 5:
+        elif location == 5 and enemytype != 69:
             if enemytype == 0:
                 enemy.image = load_image('vindicator.png')
             else:
@@ -234,13 +234,13 @@ def main():
                     vex2red = 20
                     vexes.draw(screen)
                 if enemy.rect.collidepoint(pygame.mouse.get_pos()):
-                    if location == 2:
+                    if location == 2 and enemytype == 0:
                         poattacked = 50
                         rectpossaved = enemy.rect.midbottom
                         enemy.image = load_image('po_attacked.png')
                         enemy.rect = enemy.image.get_rect()
                         enemy.rect.midbottom = rectpossaved
-                    elif location == 5 and health > 0:
+                    elif location == 5 and health > 0 and enemytype != 69:
                         enemyred = 20
                         if enemytype == 0:
                             enemy.image = load_image('vindicator_red.png')
