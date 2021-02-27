@@ -65,6 +65,11 @@ def summon(enemy, location, kills, midbottom):
                 enemy.image = load_image('vindicator.png')
                 enemy.rect = enemy.image.get_rect()
                 enemy.rect.topleft = 400, 200
+        else:
+            enemy.image = load_image('Hootin.png')
+            enemy.rect = enemy.image.get_rect()
+            enemy.rect.center = 400, 325
+            return 5000
         return location * 10 + kills // 10
 
 
@@ -77,11 +82,11 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 2
-    kills = 68
+    location = 5
+    kills = 100
     crit = 5
     balance = 0
-    damage = 10
+    damage = 100
     check = 0
     vex1red = vex2red = poattacked = enemyred = 0
 
@@ -135,10 +140,12 @@ def main():
         kills_surface = font_kills.render('Убийств: ' + str(kills), False, (191, 0, 0))
         hp1_surface = font_vexhp.render('Здоровье: ' + str(hp1), False, (255, 255, 255))
         hp2_surface = font_vexhp.render('Здоровье: ' + str(hp2), False, (255, 255, 255))
-        if location != 4:
-            health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
-        else:
+        if location == 4:
             health_surface = font_health.render('Здоровье: ' + str(health), False, (0, 0, 0))
+        elif location == 6:
+            health_surface = font_health.render('Здоровье: ' + str(health), False, (0, 0, 191))
+        else:
+            health_surface = font_health.render('Здоровье: ' + str(health), False, (255, 255, 255))
         if balance < 250 * 2 ** (damage - 1):
             dmgup_surface = font_health.render(str(250 * 2 ** (damage - 1)), False, (191, 0, 0))
         else:
@@ -210,7 +217,10 @@ def main():
                     balance += 690
             if hp1 <= 0 and hp2 <= 0:
                 check = 0
-                health = summon(enemy, location, kills, enemy.rect.midbottom)
+                if location != 6:
+                    health = summon(enemy, location, kills, enemy.rect.midbottom)
+                else:
+                    pygame.quit()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -251,11 +261,12 @@ def main():
                     else:
                         health -= damage
                 if location < 6 and nextlevel.rect.collidepoint(pygame.mouse.get_pos()) and kills >= 100:
+                    hp1 = hp2 = 0
                     location += 1
                     if location == 6:
                         save_game(location, kills, crit, balance, damage)
                         bg.remove(nextlevel)
-                        bg.remove(lock)
+                        locker.remove(lock)
                     else:
                         save_game(location, 0, crit, balance, damage)
                     kills = 0
