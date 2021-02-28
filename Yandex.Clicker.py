@@ -82,17 +82,17 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 5
+    location = 4
     kills = 100
     crit = 5
     balance = 0
-    damage = 100
+    damage = 10
     check = 0
     vex1red = vex2red = poattacked = enemyred = 0
 
     size = 800, 500
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption('Кликер говна')
+    pygame.display.set_caption('Яндекс.Кликер')
     e = pygame.sprite.Group()
     bg = pygame.sprite.Group()
     locker = pygame.sprite.Group()
