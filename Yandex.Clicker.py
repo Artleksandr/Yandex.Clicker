@@ -82,11 +82,11 @@ def save_game(location, kills, crit, balance, damage):
 def main():
     global hp1, hp2, vex1, vex2
     hp1 = hp2 = 0
-    location = 4
-    kills = 100
+    location = 1
+    kills = 0
     crit = 5
     balance = 0
-    damage = 10
+    damage = 1
     check = 0
     vex1red = vex2red = poattacked = enemyred = 0
 
