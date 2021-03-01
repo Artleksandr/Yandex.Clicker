@@ -1,10 +1,183 @@
 import os
 import pygame
 import random
+import sys
+
+from PyQt5 import uic
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
 global vex1, vex2, hp1, hp2
 
+loc = kls = crt = bablo = dmg = ''
+
 pygame.font.init()
+
+
+class MainMenu(QMainWindow):  # Класс, отвечающий за окно меню
+
+    def __init__(self):
+        super().__init__()
+
+        self.pixmap = QPixmap('data/main-menu.png')
+        self.image = QLabel(self)
+        self.image.move(0, 0)
+        self.image.resize(800, 500)
+        self.image.setPixmap(self.pixmap)
+
+        uic.loadUi('data/main-menu.ui', self)
+
+        self.start_game.clicked.connect(self.start)
+        self.saves.clicked.connect(self.saves_menu)
+        self.guide.clicked.connect(self.guide_menu)
+
+        self.show()
+
+    def start(self):
+        self.close()
+        main()
+
+    def guide_menu(self):
+        self.close()
+        self.open_rules = Guide()
+
+    def saves_menu(self):
+        self.close()
+        self.open_saves = Saves()
+
+
+class Guide(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        self.pixmap = QPixmap('data/guide-menu.png')
+        self.image = QLabel(self)
+        self.image.move(0, 0)
+        self.image.resize(800, 500)
+        self.image.setPixmap(self.pixmap)
+
+        uic.loadUi('data/guide-menu.ui', self)
+        self.show()
+
+        self.back.clicked.connect(self.main_menu)
+
+    def main_menu(self):
+        self.close()
+        self.go_home = MainMenu()
+
+
+class Saves(QMainWindow):
+    global lines, loc, kls, crt, bablo, dmg
+
+    list_of_files = os.listdir("data/savings")
+    lines = []
+    if len(list_of_files) != 0:
+        for file in list_of_files:
+            lines.append(file)
+
+    def __init__(self):
+
+        global lines, loc, kls, crt, bablo, dmg
+
+        super().__init__()
+
+        self.pixmap = QPixmap('data/saves-menu.png')
+        self.image = QLabel(self)
+        self.image.move(0, 0)
+        self.image.resize(800, 500)
+        self.image.setPixmap(self.pixmap)
+
+        uic.loadUi('data/saves-menu.ui', self)
+
+        if "save_1.txt" in lines:
+            self.location_2.setText('Открыто')
+            self.button_1.clicked.connect(self.loc_2)
+        else:
+            print('саси')
+            self.location_2.setText('Закрыто')
+
+        if "save_2.txt" in lines:
+            self.location_3.setText('Открыто')
+            self.button_2.clicked.connect(self.loc_3)
+        else:
+            self.location_3.setText('Закрыто')
+
+        if "save_3.txt" in lines:
+            self.location_4.setText('Открыто')
+            self.button_3.clicked.connect(self.loc_4)
+        else:
+            self.location_4.setText('Закрыто')
+
+        if "save_4.txt" in lines:
+            self.location_5.setText('Открыто')
+            self.button_4.clicked.connect(self.loc_5)
+        else:
+            self.location_5.setText('Закрыто')
+
+        if "save_5.txt" in lines:
+            self.location_6.setText('Открыто')
+            self.button_5.clicked.connect(self.loc_6)
+        else:
+            self.location_6.setText('Закрыто')
+
+        self.show()
+
+        self.back.clicked.connect(self.main_menu)
+
+    def main_menu(self):
+        self.close()
+        self.go_home = MainMenu()
+
+    def loc_2(self):
+        global loc, kls, crt, bablo, dmg
+
+        info = open("data/savings/save_1.txt", encoding='utf8').read.split("\n")
+        loc = int(info[0])
+        kls = int(info[1])
+        crt = int(info[2])
+        bablo = int(info[3])
+        dmg = int(info[4])
+
+    def loc_3(self):
+        global loc, kls, crt, bablo, dmg
+
+        info = open("data/savings/save_2.txt", encoding='utf8').read.split("\n")
+        loc = int(info[0])
+        kls = int(info[1])
+        crt = int(info[2])
+        bablo = int(info[3])
+        dmg = int(info[4])
+
+    def loc_4(self):
+        global loc, kls, crt, bablo, dmg
+
+        info = open("data/savings/save_3.txt", encoding='utf8').read.split("\n")
+        loc = int(info[0])
+        kls = int(info[1])
+        crt = int(info[2])
+        bablo = int(info[3])
+        dmg = int(info[4])
+
+    def loc_5(self):
+        global loc, kls, crt, bablo, dmg
+
+        info = open("data/savings/save_4.txt", encoding='utf8').read.split("\n")
+        loc = int(info[0])
+        kls = int(info[1])
+        crt = int(info[2])
+        bablo = int(info[3])
+        dmg = int(info[4])
+
+    def loc_6(self):
+        global loc, kls, crt, bablo, dmg
+
+        info = open("data/savings/save_5.txt", encoding='utf8').read.split("\n")
+        loc = 5
+        kls = 80
+        crt = int(info[2])
+        bablo = int(info[3])
+        dmg = int(info[4])
 
 
 def load_image(name, ck=None):
@@ -74,19 +247,26 @@ def summon(enemy, location, kills, midbottom):
 
 
 def save_game(location, kills, crit, balance, damage):
-    save = open('data/save_{}'.format(location - 1), 'w', encoding='utf8')
+    save = open('data/savings/save_{}.txt'.format(location - 1), 'w', encoding='utf8')
     save.write(str(location) + '\n' + str(kills) + '\n' + str(crit) + '\n' + str(balance) + '\n' + str(damage))
     save.close()
 
 
 def main():
-    global hp1, hp2, vex1, vex2
+    global hp1, hp2, vex1, vex2, loc, kls, crt, bablo, dmg
     hp1 = hp2 = 0
-    location = 1
-    kills = 0
-    crit = 5
-    balance = 0
-    damage = 1
+    if loc == '':
+        location = 1
+        kills = 0
+        crit = 5
+        balance = 0
+        damage = 1
+    else:
+        location = loc
+        kills = kls
+        crit = crt
+        balance = bablo
+        damage = dmg
     check = 0
     vex1red = vex2red = poattacked = enemyred = 0
 
@@ -286,4 +466,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    app = QApplication(sys.argv)
+    ex = MainMenu()
+    ex.show()
+    sys.exit(app.exec_())
