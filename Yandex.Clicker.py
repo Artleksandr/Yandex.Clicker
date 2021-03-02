@@ -70,7 +70,7 @@ class Guide(QMainWindow):
 class Saves(QMainWindow):
     global lines, loc, kls, crt, bablo, dmg
 
-    list_of_files = os.listdir("data/savings")
+    list_of_files = os.listdir("data/saves")
     lines = []
     if len(list_of_files) != 0:
         for file in list_of_files:
@@ -94,6 +94,7 @@ class Saves(QMainWindow):
             self.location_2.setText('Открыто')
             self.button_1.clicked.connect(self.loc_2)
         else:
+            print('саси')
             self.location_2.setText('Закрыто')
 
         if "save_2.txt" in lines:
@@ -131,52 +132,77 @@ class Saves(QMainWindow):
     def loc_2(self):
         global loc, kls, crt, bablo, dmg
 
-        info = open("data/savings/save_1.txt", encoding='utf8').read.split("\n")
+        with open('data/saves/save_1.txt', encoding='utf8') as f:
+            info = f.read().split('\n')
+
         loc = int(info[0])
         kls = int(info[1])
         crt = int(info[2])
         bablo = int(info[3])
         dmg = int(info[4])
+
+        self.close()
+        main()
 
     def loc_3(self):
         global loc, kls, crt, bablo, dmg
 
-        info = open("data/savings/save_2.txt", encoding='utf8').read.split("\n")
+        with open('data/saves/save_2.txt', encoding='utf8') as f:
+            info = f.read().split('\n')
+
         loc = int(info[0])
         kls = int(info[1])
         crt = int(info[2])
         bablo = int(info[3])
         dmg = int(info[4])
+
+        self.close()
+        main()
 
     def loc_4(self):
         global loc, kls, crt, bablo, dmg
 
-        info = open("data/savings/save_3.txt", encoding='utf8').read.split("\n")
+        with open('data/saves/save_3.txt', encoding='utf8') as f:
+            info = f.read().split('\n')
+
         loc = int(info[0])
         kls = int(info[1])
         crt = int(info[2])
         bablo = int(info[3])
         dmg = int(info[4])
+
+        self.close()
+        main()
 
     def loc_5(self):
         global loc, kls, crt, bablo, dmg
 
-        info = open("data/savings/save_4.txt", encoding='utf8').read.split("\n")
+        with open('data/saves/save_4.txt', encoding='utf8') as f:
+            info = f.read().split('\n')
+
         loc = int(info[0])
         kls = int(info[1])
         crt = int(info[2])
         bablo = int(info[3])
         dmg = int(info[4])
 
+        self.close()
+        main()
+
     def loc_6(self):
         global loc, kls, crt, bablo, dmg
 
-        info = open("data/savings/save_5.txt", encoding='utf8').read.split("\n")
+        with open('data/saves/save_5.txt', encoding='utf8') as f:
+            info = f.read().split('\n')
+
         loc = 5
         kls = 80
         crt = int(info[2])
         bablo = int(info[3])
         dmg = int(info[4])
+
+        self.close()
+        main()
 
 
 def load_image(name, ck=None):
@@ -246,7 +272,7 @@ def summon(enemy, location, kills, midbottom):
 
 
 def save_game(location, kills, crit, balance, damage):
-    save = open('data/savings/save_{}.txt'.format(location - 1), 'w', encoding='utf8')
+    save = open('data/saves/save_{}.txt'.format(location - 1), 'w', encoding='utf8')
     save.write(str(location) + '\n' + str(kills) + '\n' + str(crit) + '\n' + str(balance) + '\n' + str(damage))
     save.close()
 
