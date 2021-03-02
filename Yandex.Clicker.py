@@ -7,7 +7,7 @@ from PyQt5 import uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
-global vex1, vex2, hp1, hp2
+global vex1, vex2, hp1, hp2, lines
 
 loc = kls = crt = bablo = dmg = ''
 
@@ -68,7 +68,7 @@ class Guide(QMainWindow):
 
 
 class Saves(QMainWindow):
-    global lines, loc, kls, crt, bablo, dmg
+    global loc, kls, crt, bablo, dmg
 
     list_of_files = os.listdir("data/saves")
     lines = []
@@ -78,7 +78,7 @@ class Saves(QMainWindow):
 
     def __init__(self):
 
-        global lines, loc, kls, crt, bablo, dmg
+        global loc, kls, crt, bablo, dmg
 
         super().__init__()
 
