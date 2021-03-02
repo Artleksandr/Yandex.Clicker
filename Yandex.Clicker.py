@@ -94,7 +94,6 @@ class Saves(QMainWindow):
             self.location_2.setText('Открыто')
             self.button_1.clicked.connect(self.loc_2)
         else:
-            print('саси')
             self.location_2.setText('Закрыто')
 
         if "save_2.txt" in lines:
