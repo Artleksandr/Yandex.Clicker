@@ -355,7 +355,7 @@ def main():
     critup.rect.topleft = 0, 400
 
     running = True
-    ending = True
+    ending = False
     while running:
         bg.draw(screen)
         if kills < 100:
@@ -447,9 +447,8 @@ def main():
                 if location != 6:
                     health = summon(enemy, location, kills, enemy.rect.midbottom)
                 else:
-                    pygame.quit()
-                    ending = FinalMenu()
-                    ending.show()
+                    running = False
+                    ending = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
