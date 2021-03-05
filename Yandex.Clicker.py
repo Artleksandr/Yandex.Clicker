@@ -7,7 +7,7 @@ from PyQt5 import uic
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
-global vex1, vex2, hp1, hp2, lines
+global vex1, vex2, hp1, hp2
 
 loc = kls = crt = bablo = dmg = ''
 
@@ -68,7 +68,7 @@ class Guide(QMainWindow):
 
 
 class Saves(QMainWindow):
-    global loc, kls, crt, bablo, dmg
+    global lines, loc, kls, crt, bablo, dmg
 
     list_of_files = os.listdir("data/saves")
     lines = []
@@ -78,7 +78,7 @@ class Saves(QMainWindow):
 
     def __init__(self):
 
-        global loc, kls, crt, bablo, dmg
+        global lines, loc, kls, crt, bablo, dmg
 
         super().__init__()
 
@@ -94,6 +94,7 @@ class Saves(QMainWindow):
             self.location_2.setText('Открыто')
             self.button_1.clicked.connect(self.loc_2)
         else:
+            print('саси')
             self.location_2.setText('Закрыто')
 
         if "save_2.txt" in lines:
@@ -202,6 +203,27 @@ class Saves(QMainWindow):
 
         self.close()
         main()
+
+
+class FinalMenu(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        print('Прикол')
+
+        self.pixmap = QPixmap('data/final-menu.png')
+        self.image = QLabel(self)
+        self.image.move(0, 0)
+        self.image.resize(800, 500)
+        self.image.setPixmap(self.pixmap)
+
+        print('Прикол')
+
+        uic.loadUi('data/final-menu.ui', self)
+        self.show()
+
+        print('Прикол')
 
 
 def load_image(name, ck=None):
@@ -425,6 +447,8 @@ def main():
                     health = summon(enemy, location, kills, enemy.rect.midbottom)
                 else:
                     pygame.quit()
+                    ending = FinalMenu()
+                    ending.show()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
