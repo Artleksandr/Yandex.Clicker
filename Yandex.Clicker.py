@@ -353,6 +353,10 @@ def main():
     critup.image = load_image('critup.png')
     critup.rect = critup.image.get_rect()
     critup.rect.topleft = 0, 400
+    endingg = pygame.sprite.Group()
+    ends = pygame.sprite.Sprite(endingg)
+    ends.image = load_image('final-menu.png')
+    ends.rect = ends.image.get_rect()
 
     running = True
     ending = False
@@ -447,7 +451,6 @@ def main():
                 if location != 6:
                     health = summon(enemy, location, kills, enemy.rect.midbottom)
                 else:
-                    running = False
                     ending = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -508,13 +511,9 @@ def main():
                     crit += 1
         if health > 0:
             e.draw(screen)
+        while ending:
+            endingg.draw(screen)
         pygame.display.flip()
-    while ending:
-        endingg = pygame.sprite.Group()
-        ends = pygame.sprite.Sprite(endingg)
-        ends.image = load_image('final-menu.png')
-        ends.rect = ends.image.get_rect()
-        endingg.draw(screen)
 
     pygame.quit()
 
