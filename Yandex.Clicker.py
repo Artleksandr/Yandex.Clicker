@@ -355,6 +355,7 @@ def main():
     critup.rect.topleft = 0, 400
 
     running = True
+    ending = True
     while running:
         bg.draw(screen)
         if kills < 100:
@@ -509,6 +510,12 @@ def main():
         if health > 0:
             e.draw(screen)
         pygame.display.flip()
+    while ending:
+        endingg = pygame.sprite.Group()
+        ends = pygame.sprite.Sprite(endingg)
+        ends.image = load_image('final-menu.png')
+        ends.rect = ends.image.get_rect()
+        endingg.draw(screen)
 
     pygame.quit()
 
