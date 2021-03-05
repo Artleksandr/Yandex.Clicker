@@ -353,13 +353,13 @@ def main():
     critup.image = load_image('critup.png')
     critup.rect = critup.image.get_rect()
     critup.rect.topleft = 0, 400
-    endingg = pygame.sprite.Group()
-    ends = pygame.sprite.Sprite(endingg)
+    ending = pygame.sprite.Group()
+    ends = pygame.sprite.Sprite(ending)
     ends.image = load_image('final-menu.png')
     ends.rect = ends.image.get_rect()
+    ends.rect.topleft = 0, 0
 
     running = True
-    ending = False
     while running:
         bg.draw(screen)
         if kills < 100:
@@ -412,12 +412,14 @@ def main():
         else:
             vex2.rect.topleft = 801, 501
         vexes.draw(screen)
-        screen.blit(dmg_surface, (dmgup.rect.topleft[0] + 6, dmgup.rect.topleft[1]))
-        screen.blit(crit_surface, (critup.rect.topleft[0] + 6, critup.rect.topleft[1]))
-        screen.blit(critup_surface, (critup.rect.topleft[0] + (critup.rect.width - critup_surface.get_rect()[2]) // 2,
-                                     436))
-        screen.blit(dmgup_surface, (dmgup.rect.topleft[0] + (dmgup.rect.width - dmgup_surface.get_rect()[2]) // 2, 96))
-        screen.blit(kills_surface, (background.rect.topright[0] - 175 - len(str(kills)) * 22, 0))
+        if location < 6 or kills == 0:
+            screen.blit(dmg_surface, (dmgup.rect.topleft[0] + 6, dmgup.rect.topleft[1]))
+            screen.blit(crit_surface, (critup.rect.topleft[0] + 6, critup.rect.topleft[1]))
+            screen.blit(critup_surface, (critup.rect.topleft[0] +
+                                         (critup.rect.width - critup_surface.get_rect()[2]) // 2, 436))
+            screen.blit(dmgup_surface, (dmgup.rect.topleft[0] + (dmgup.rect.width - dmgup_surface.get_rect()[2]) // 2,
+                                        96))
+            screen.blit(kills_surface, (background.rect.topright[0] - 175 - len(str(kills)) * 22, 0))
         if health > 0:
             screen.blit(health_surface, (enemy.rect.topleft[0] + (enemy.rect.width - health_surface.get_rect()[2]) // 2,
                                          enemy.rect.topleft[1] - 35))
@@ -451,7 +453,8 @@ def main():
                 if location != 6:
                     health = summon(enemy, location, kills, enemy.rect.midbottom)
                 else:
-                    ending = True
+                    bg.empty()
+                    ending.draw(screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -511,8 +514,6 @@ def main():
                     crit += 1
         if health > 0:
             e.draw(screen)
-        while ending:
-            endingg.draw(screen)
         pygame.display.flip()
 
     pygame.quit()
