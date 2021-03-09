@@ -19,7 +19,7 @@ class MainMenu(QMainWindow):  # Класс, отвечающий за окно �
     def __init__(self):
         super().__init__()
 
-        self.pixmap = QPixmap('data/main-menu.png')
+        self.pixmap = QPixmap('data/main-menu.png') 
         self.image = QLabel(self)
         self.image.move(0, 0)
         self.image.resize(800, 500)
@@ -33,20 +33,20 @@ class MainMenu(QMainWindow):  # Класс, отвечающий за окно �
 
         self.show()
 
-    def start(self):
+    def start(self): # Функция закрывающая меню и включающая игру
         self.close()
         main()
 
-    def guide_menu(self):
+    def guide_menu(self): # Функция перехода в обучение
         self.close()
         self.open_rules = Guide()
 
-    def saves_menu(self):
+    def saves_menu(self): # Функция перехода в сохранения
         self.close()
         self.open_saves = Saves()
 
 
-class Guide(QMainWindow):
+class Guide(QMainWindow): # Класс, отвечающий за окно обучения
 
     def __init__(self):
         super().__init__()
@@ -62,12 +62,12 @@ class Guide(QMainWindow):
 
         self.back.clicked.connect(self.main_menu)
 
-    def main_menu(self):
+    def main_menu(self): # Функция возврата в главное меню
         self.close()
         self.go_home = MainMenu()
 
 
-class Saves(QMainWindow):
+class Saves(QMainWindow): # Класс, отвечающий за вывод меню сохранения
     global lines, loc, kls, crt, bablo, dmg
 
     list_of_files = os.listdir("data/saves")
@@ -90,7 +90,7 @@ class Saves(QMainWindow):
 
         uic.loadUi('data/saves-menu.ui', self)
 
-        if "save_1.txt" in lines:
+        if "save_1.txt" in lines: # Куча команд if, проверяющих наличие сохранений
             self.location_2.setText('Открыто')
             self.button_1.clicked.connect(self.loc_2)
         else:
@@ -125,11 +125,11 @@ class Saves(QMainWindow):
 
         self.back.clicked.connect(self.main_menu)
 
-    def main_menu(self):
+    def main_menu(self): # Функция возврата в главное меню
         self.close()
         self.go_home = MainMenu()
 
-    def loc_2(self):
+    def loc_2(self): # Куча функций, отвечающих за перенесение данных из файла сохранения
         global loc, kls, crt, bablo, dmg
 
         with open('data/saves/save_1.txt', encoding='utf8') as f:
