@@ -226,7 +226,7 @@ class FinalMenu(QMainWindow):
         print('Прикол')
 
 
-def load_image(name, ck=None):
+def load_image(name, ck=None):  # загрузка изображений
     a = os.path.join('data', name)
     try:
         image = pygame.image.load(a).convert_alpha()
@@ -246,7 +246,7 @@ def load_image(name, ck=None):
 enemytype = 0
 
 
-def summon(enemy, location, kills, midbottom):
+def summon(enemy, location, kills, midbottom):  # призыв врагов
     if kills > 68 and kills % 69 == 0:
         global enemytype, hp1, hp2
         enemy.image = load_image('creature.png')
@@ -292,13 +292,13 @@ def summon(enemy, location, kills, midbottom):
         return location * 10 + kills // 10
 
 
-def save_game(location, kills, crit, balance, damage):
+def save_game(location, kills, crit, balance, damage):  # сохранение игры
     save = open('data/saves/save_{}.txt'.format(location - 1), 'w', encoding='utf8')
     save.write(str(location) + '\n' + str(kills) + '\n' + str(crit) + '\n' + str(balance) + '\n' + str(damage))
     save.close()
 
 
-def main():
+def main():  # основная часть программы
     global hp1, hp2, vex1, vex2, loc, kls, crt, bablo, dmg
     hp1 = hp2 = 0
     if loc == '':
@@ -360,7 +360,7 @@ def main():
     ends.rect.topleft = 0, 0
 
     running = True
-    while running:
+    while running:  # основной цикл игры
         bg.draw(screen)
         if kills < 100:
             locker.draw(screen)
