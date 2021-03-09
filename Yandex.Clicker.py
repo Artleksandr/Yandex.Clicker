@@ -205,27 +205,6 @@ class Saves(QMainWindow): # Класс, отвечающий за вывод м�
         main()
 
 
-class FinalMenu(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-
-        print('Прикол')
-
-        self.pixmap = QPixmap('data/final-menu.png')
-        self.image = QLabel(self)
-        self.image.move(0, 0)
-        self.image.resize(800, 500)
-        self.image.setPixmap(self.pixmap)
-
-        print('Прикол')
-
-        uic.loadUi('data/final-menu.ui', self)
-        self.show()
-
-        print('Прикол')
-
-
 def load_image(name, ck=None):  # загрузка изображений
     a = os.path.join('data', name)
     try:
